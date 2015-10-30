@@ -27,3 +27,17 @@ $update = array(
 	'record' => '4.3.2.1',	// what record you want to be set on the found DNS records
 );
 ```
+
+# Usage
+When you are ready with your configuration, you can run the script with fallowing command:
+```
+php bulk-records-update.php
+```
+
+# Output
+The script will output all found records and status of the update.
+
+# Possible problems
+If your API user ID or Password are incorrect, you will get an error message.
+
+If any of the found records is not update, you will get an error message
