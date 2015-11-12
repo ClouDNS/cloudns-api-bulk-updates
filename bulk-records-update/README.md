@@ -5,7 +5,7 @@ With this script you can bulk update records. You can filter the records by "Typ
 **AUTH_ID** should be your API user ID
 **AUTH_PASS** should be the password of your API user
 
-In the **$search** variable you have add the record type and record you are looking for. For example you can search for **A** records with IP address **1.2.3.4**
+In the **$search** variable you have to add the record type and record you are looking for. For example you can search for **A** records with IP address **1.2.3.4**
 
 In the **$update** variable you have to add the record you want to be set to the found records. For example you can update the found A records with IP 1.2.3.4 to **4.3.2.1**
 
@@ -29,7 +29,7 @@ $update = array(
 ```
 
 # Usage
-When you are ready with your configuration, you can run the script with fallowing command:
+When you are ready with your configuration, you can run the script with following command:
 ```
 php bulk-records-update.php
 ```
