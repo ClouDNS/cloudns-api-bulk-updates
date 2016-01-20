@@ -41,3 +41,8 @@ The script will output all found records and status of the update.
 If your API user ID or Password are incorrect, you will get an error message.
 
 If any of the found records is not update, you will get an error message
+
+# ClouDNS Links
+* [DNS hosting](https://www.cloudns.net)
+* [Managed DNS](https://www.cloudns.net/managed-dns/)
+* [DDoS Protected DNS](https://www.cloudns.net/ddos-protected-plans/)

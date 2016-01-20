@@ -50,3 +50,8 @@ Example:
 ```
 0 0 1 * * /usr/bin/php /path/to/last-month-hourly-stats.php >/dev/null
 ```
+
+# ClouDNS Links
+* [DNS hosting](https://www.cloudns.net)
+* [Managed DNS](https://www.cloudns.net/managed-dns/)
+* [DDoS Protected DNS](https://www.cloudns.net/ddos-protected-plans/)
