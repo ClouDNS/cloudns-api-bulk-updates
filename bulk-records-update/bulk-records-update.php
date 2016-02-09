@@ -43,7 +43,6 @@ if (isset($login['status']) && $login['status'] == 'Failed') {
 
 // getting all the domains
 $rows_per_page = 100; // 100 is the maximum
-$zones = $zones_pages = array();
 $pages = apiCall('dns/get-pages-count.json', "rows-per-page={$rows_per_page}");
 
 for ($i=1; $i<=$pages; $i++) {
