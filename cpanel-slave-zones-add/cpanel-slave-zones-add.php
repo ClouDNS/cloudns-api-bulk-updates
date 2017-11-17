@@ -3,8 +3,13 @@
 // Auth ID and Password
 define("AUTH_ID", 0);
 define("AUTH_PASS", "xxx");
+
 // IP address of the master server (primary server)
 define("MASTER_IP", "xxx.xxx.xxx.xxx");
+
+// Second IP address for master server (it may be IPv6 or IPv4 address)
+//define("MASTER_IP2", "xxx.xxx.xxx.xxx");
+
 // the directory with the zone files, their names are used to create the slave zones, not the content of the files
 define("ZONES_DIR", "/var/named/");
 // this file will contain a list of files that are not dns zone files and there won't be a request to be added the next time the script runs
@@ -52,13 +57,18 @@ if ($handle) {
 		if (!strpos($zoneName, '.db')) {
 			file_put_contents(TMPFILE, $zonename."\n", FILE_APPEND);
 		}
-		 $zoneName = preg_replace('/\.db$/', $zoneName);
+		$zoneName = preg_replace('/\.db$/', $zoneName);
 
 		//calling the api
 		$response = apiCall('dns/register.json', "domain-name={$zonename}&zone-type=slave&master-ip=".MASTER_IP);
 		// if the api returns the zone is invalid we put it in the file with the invalid zones
 		if ($response['status'] == 'Failed') {
 			file_put_contents(TMPFILE, $zonename."\n", FILE_APPEND);
+			continue;
+		}
+		
+		if (defined('MASTER_IP2')) {
+			apiCall('dns/add-master-server.json', "domain-name={$zonename}&master-ip=".MASTER_IP2);
 		}
 	}
 
