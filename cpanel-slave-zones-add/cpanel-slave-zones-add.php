@@ -47,28 +47,28 @@ $invalid_zones = file(TMPFILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 $handle = opendir(ZONES_DIR);
 if ($handle) {
 	// loops through the files
-	while (false !== ($zonename = readdir($handle))) {
+	while (false !== ($zoneName = readdir($handle))) {
 		// checks if the zone name is invalid and if not adds the slave zone
-		if (in_array($zonename, $invalid_zones)) {
+		if (in_array($zoneName, $invalid_zones)) {
 			continue;
 		}
 
 		// check file format
 		if (!strpos($zoneName, '.db')) {
-			file_put_contents(TMPFILE, $zonename."\n", FILE_APPEND);
+			file_put_contents(TMPFILE, $zoneName."\n", FILE_APPEND);
 		}
 		$zoneName = preg_replace('/\.db$/', $zoneName);
 
 		//calling the api
-		$response = apiCall('dns/register.json', "domain-name={$zonename}&zone-type=slave&master-ip=".MASTER_IP);
+		$response = apiCall('dns/register.json', "domain-name={$zoneName}&zone-type=slave&master-ip=".MASTER_IP);
 		// if the api returns the zone is invalid we put it in the file with the invalid zones
 		if ($response['status'] == 'Failed') {
-			file_put_contents(TMPFILE, $zonename."\n", FILE_APPEND);
+			file_put_contents(TMPFILE, $zoneName."\n", FILE_APPEND);
 			continue;
 		}
 		
 		if (defined('MASTER_IP2')) {
-			apiCall('dns/add-master-server.json', "domain-name={$zonename}&master-ip=".MASTER_IP2);
+			apiCall('dns/add-master-server.json', "domain-name={$zoneName}&master-ip=".MASTER_IP2);
 		}
 	}
 
