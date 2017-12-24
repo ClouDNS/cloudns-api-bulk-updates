@@ -57,7 +57,7 @@ if ($handle) {
 		if (!strpos($zoneName, '.db')) {
 			file_put_contents(TMPFILE, $zoneName."\n", FILE_APPEND);
 		}
-		$zoneName = preg_replace('/\.db$/', $zoneName);
+		$zoneName = preg_replace('/\.db$/', '', $zoneName);
 
 		//calling the api
 		$response = apiCall('dns/register.json', "domain-name={$zoneName}&zone-type=slave&master-ip=".MASTER_IP);
