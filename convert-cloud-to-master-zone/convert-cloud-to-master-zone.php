@@ -73,7 +73,6 @@ function apiCall ($url, $data) {
 	$data = "auth-id=".AUTH_ID."&auth-password=".AUTH_PASS."&{$data}";
 
 	$init = curl_init();
-	curl_setopt($init, CURLOPT_SSL_VERIFYPEER, FALSE);
 	curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($init, CURLOPT_URL, $url);
 	curl_setopt($init, CURLOPT_POST, true);
