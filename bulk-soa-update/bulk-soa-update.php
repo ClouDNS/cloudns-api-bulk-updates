@@ -1,8 +1,8 @@
 <?php
 
 // Auth ID and Password
-define("AUTH_ID", 70);
-define("AUTH_PASS", "lanex24api26");
+define("AUTH_ID", 0);
+define("AUTH_PASS", "xxx");
 
 // SOA record to be set to all zones
 $soa = array(
