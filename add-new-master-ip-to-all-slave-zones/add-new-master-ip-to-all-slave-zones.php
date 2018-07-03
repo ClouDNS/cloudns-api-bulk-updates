@@ -42,7 +42,7 @@ for ($i=1; $i<=$pages; $i++) {
 			continue;
 		}
 		
-		$response = apiCall('dns/add-master-server.json', "domain-name={$zone['name']}&master-ip=".MASTER_IP2);
+		$response = apiCall('dns/add-master-server.json', "domain-name={$zone['name']}&master-ip=".MASTER_IP);
 		if (isset($response['status'])) {
 			echo "{$zone['name']}: {$response['statusDescription']}\n";
 		} else {
