@@ -30,6 +30,7 @@ function apiCall ($url, $data) {
 	curl_setopt($init, CURLOPT_URL, $url);
 	curl_setopt($init, CURLOPT_POST, true);
 	curl_setopt($init, CURLOPT_POSTFIELDS, $data);
+	curl_setopt($init, CURLOPT_USERAGENT, 'cloudns_api_script/0.1 (+https://github.com/ClouDNS/cloudns-api-bulk-updates/tree/master/powerdns-pgsql-slave-zones-add)');
 	$content = curl_exec($init);
 	curl_close($init);
 	return json_decode($content, true);
