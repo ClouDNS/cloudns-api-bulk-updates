@@ -15,6 +15,9 @@ define("ZONES_DIR", "/etc/bind/");
 // this file will contain a list of files that are not dns zone files and there won't be a request to be added the next time the script runs
 define("TMPFILE", "/tmp/cloudns_invalid-zone-names.txt");
 
+if ((file_exists(TMPFILE) && !is_writable(TMPFILE)) || (!file_exists(TMPFILE) && !is_writable(dirname(TMPFILE)))) {
+	die("TMPFILE (".TMPFILE.") is not writable. Please make it writable to continue or update the config option to a new path.");
+}
 
 // function to connect to the API
 function apiCall ($url, $data) {
