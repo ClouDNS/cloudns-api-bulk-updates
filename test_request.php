@@ -9,6 +9,7 @@ function apiCall ($url, $data) {
 	curl_setopt($init, CURLOPT_URL, $url);
 	curl_setopt($init, CURLOPT_POST, true);
 	curl_setopt($init, CURLOPT_POSTFIELDS, $data);
+	curl_setopt($init, CURLOPT_USERAGENT, 'cloudns_test_reqest_script/0.1 (+https://github.com/ClouDNS/cloudns-api-bulk-updates/blob/master/test_request.php)');
 
 	$content = curl_exec($init);
 
