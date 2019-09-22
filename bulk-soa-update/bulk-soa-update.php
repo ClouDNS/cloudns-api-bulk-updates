@@ -50,7 +50,7 @@ for ($i=1; $i<=$pages; $i++) {
 echo "Updated zones: {$y} of {$z} master zones\n";
 
 function apiCall ($url, $data) {
-	$url = "http://api.cloudns.net/{$url}";
+	$url = "https://api.cloudns.net/{$url}";
 	$data = "auth-id=".AUTH_ID."&auth-password=".AUTH_PASS."&{$data}";
 	$init = curl_init();
 	curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
