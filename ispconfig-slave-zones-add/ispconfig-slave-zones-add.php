@@ -11,7 +11,7 @@ define("MASTER_IP", "xxx.xxx.xxx.xxx");
 //define("MASTER_IP2", "xxx.xxx.xxx.xxx");
 
 // the directory with the zone files, their names are used to create the slave zones, not the content of the files
-define("ZONES_DIR", "/etc/bind/");
+define("ZONES_DIR", "/var/named/");
 // this file will contain a list of files that are not dns zone files and there won't be a request to be added the next time the script runs
 define("TMPFILE", "/tmp/cloudns_invalid-zone-names.txt");
 
@@ -57,14 +57,16 @@ if ($handle) {
 		}
 
 		// check file format
-		if (strpos('pri.', $zoneName) !== 0) {
+		if (strpos($zoneName, 'pri.') !== 0) {
 			file_put_contents(TMPFILE, $zoneName."\n", FILE_APPEND);
+			continue;
 		}
-		$zoneName = preg_replace('/^pri\./', '', $zoneName);
-		$zoneName = preg_replace('/\.signed$/', '', $zoneName);
+		
+		$cleanedZoneName = preg_replace('/^pri\./', '', $zoneName);
+		$cleanedZoneName = preg_replace('/\.signed$/', '', $cleanedZoneName);
 
 		//calling the api
-		$response = apiCall('dns/register.json', "domain-name={$zoneName}&zone-type=slave&master-ip=".MASTER_IP);
+		$response = apiCall('dns/register.json', "domain-name={$cleanedZoneName}&zone-type=slave&master-ip=".MASTER_IP);
 		// if the api returns the zone is invalid we put it in the file with the invalid zones
 		if ($response['status'] == 'Failed') {
 			file_put_contents(TMPFILE, $zoneName."\n", FILE_APPEND);
@@ -72,7 +74,7 @@ if ($handle) {
 		}
 		
 		if (defined('MASTER_IP2')) {
-			apiCall('dns/add-master-server.json', "domain-name={$zoneName}&master-ip=".MASTER_IP2);
+			apiCall('dns/add-master-server.json', "domain-name={$cleanedZoneName}&master-ip=".MASTER_IP2);
 		}
 	}
 

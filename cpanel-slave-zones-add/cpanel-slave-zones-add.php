@@ -41,9 +41,6 @@ if (isset($login['status']) && $login['status'] == 'Failed') {
 }
 
 // gets the content of the file
-$fopen = fopen(TMPFILE, "a+");
-
-// gets the content of the file
 $invalid_zones = file(TMPFILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 // gets the zone files names
@@ -59,14 +56,15 @@ if ($handle) {
 		// check file format
 		if (!strpos($zoneName, '.db')) {
 			file_put_contents(TMPFILE, $zoneName."\n", FILE_APPEND);
+			continue;
 		}
-		$zoneName = preg_replace('/\.db$/', '', $zoneName);
+		$zoneName = preg_replace('/\.db$/', $zoneName);
 
 		//calling the api
 		$response = apiCall('dns/register.json', "domain-name={$zoneName}&zone-type=slave&master-ip=".MASTER_IP);
 		// if the api returns the zone is invalid we put it in the file with the invalid zones
 		if ($response['status'] == 'Failed') {
-			file_put_contents(TMPFILE, $zoneName."\n", FILE_APPEND);
+			file_put_contents(TMPFILE, $zoneName.".db\n", FILE_APPEND);
 			continue;
 		}
 		
@@ -77,4 +75,3 @@ if ($handle) {
 
 	closedir($handle);
 }
-fclose($fopen);

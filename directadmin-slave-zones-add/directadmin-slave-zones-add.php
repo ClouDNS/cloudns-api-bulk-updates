@@ -59,6 +59,7 @@ if ($handle) {
 		// check file format
 		if (!strpos($zoneName, '.db')) {
 			file_put_contents(TMPFILE, $zoneName."\n", FILE_APPEND);
+			continue;
 		}
 		$zoneName = preg_replace('/\.db$/', '', $zoneName);
 
@@ -66,7 +67,7 @@ if ($handle) {
 		$response = apiCall('dns/register.json', "domain-name={$zoneName}&zone-type=slave&master-ip=".MASTER_IP);
 		// if the api returns the zone is invalid we put it in the file with the invalid zones
 		if ($response['status'] == 'Failed') {
-			file_put_contents(TMPFILE, $zoneName."\n", FILE_APPEND);
+			file_put_contents(TMPFILE, $zoneName.".db\n", FILE_APPEND);
 			continue;
 		}
 		
