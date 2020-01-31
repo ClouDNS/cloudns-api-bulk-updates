@@ -1,7 +1,7 @@
 <?php
 
 function apiCall ($url, $data) {
-	$url = 'http://api.dev.cloudns.net/'. $url;
+	$url = 'http://api.cloudns.net/'. $url;
 	$data = '&auth-id=AUTHID&auth-password=AUTHPASSWORD&'. $data;
 
 	echo "Request:\n{$data}\n\n";
