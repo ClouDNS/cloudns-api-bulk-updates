@@ -7,6 +7,9 @@ define("AUTH_PASS", "xxx");
 // Extra Master IP address for the slave zones - it can be both IPv4 or IPv6
 define("MASTER_IP", "xxx.xxx.xxx.xxx");
 
+// Remove current Master IP address(es) for the slave zones - change to 1 to remove them
+define("REMOVE_CURRENT", 0);
+
 // function to connect to the API
 function apiCall ($url, $data) {
 	$url = "https://api.cloudns.net/{$url}";
@@ -43,12 +46,19 @@ for ($i=1; $i<=$pages; $i++) {
 			continue;
 		}
 		
-		$response = apiCall('dns/add-master-server.json', "domain-name={$zone['name']}&master-ip=".MASTER_IP);
-		if (isset($response['status'])) {
-			echo "{$zone['name']}: {$response['statusDescription']}\n";
-		} else {
-			echo "{$zone['name']}: added\n";
+		if (REMOVE_CURRENT == 1) {
+			$currentMasterServers = apiCall('dns/master-servers.json', "domain-name={$zone['name']}");
 		}
+		
+		$response = apiCall('dns/add-master-server.json', "domain-name={$zone['name']}&master-ip=".MASTER_IP);
+		
+		if ($response['status'] == "Success" && REMOVE_CURRENT == 1) {
+			foreach ($currentMasterServers as $key => $value) {
+				apiCall('dns/delete-master-server.json', "domain-name={$zone['name']}&master-id={$key}");
+			}
+			echo "{$zone['name']}: current master server(s) removed\n"; 
+		}
+		
+		echo "{$zone['name']}: {$response['statusDescription']}\n";
 	}
 }
-
