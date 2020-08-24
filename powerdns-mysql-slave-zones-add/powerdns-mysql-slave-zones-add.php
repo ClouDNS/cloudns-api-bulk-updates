@@ -47,7 +47,7 @@ if (isset($login['status']) && $login['status'] == 'Failed') {
 }
 
 // check db connection
-$db = mysqli_connect(PDNS_MYSQL_HOST, PDNS_MYSQL_USER, PDNS_MYSQL_PASS, PDNS_MYSQL_PORT);
+$db = mysqli_connect(PDNS_MYSQL_HOST, PDNS_MYSQL_USER, PDNS_MYSQL_PASS, PDNS_MYSQL_DB, PDNS_MYSQL_PORT);
 if (!$db) {
 	die("Unable to connect to the database.\n");
 }
