@@ -34,8 +34,8 @@ for ($i=1; $i<=$pages; $i++) {
   foreach (apiCall('dns/master-servers.json', "domain-name={$zone['name']}") as $id => $ip) {
     $response[] = $ip;
     $zonename = $zone['name'];
+    $text = "\n".$zonename." with Master server(s) ".implode(', ', $response);
     echo $text;
     }
-   $text = "\n".$zonename." with Master server(s) ".implode(', ', $response);
   }
  }
