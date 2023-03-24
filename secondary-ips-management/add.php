@@ -32,16 +32,16 @@ if (isset($login['status']) && $login['status'] == 'Failed') {
 	die($login['statusDescription']);
 }
 
-foreach ($zones as $zone) {
+foreach (explode("\n", $zones) as $zone) {
 	$zone = trim($zone);
 	if (empty($zone)) {
 		continue;
 	}
 	
-	$response = apiCall('dns/axfr-add.json', "domain-name={$zone['name']}&ip=".SLAVE_IP);
+	$response = apiCall('dns/axfr-add.json', "domain-name={$zone}&ip=".SLAVE_IP);
 	if (isset($response['status'])) {
-		echo "{$zone['name']}: {$response['statusDescription']}\n";
+		echo "{$zone}: {$response['statusDescription']}\n";
 	} else {
-		echo "{$zone['name']}: slave ip added\n";
+		echo "{$zone}: slave IP added\n";
 	}
 }
