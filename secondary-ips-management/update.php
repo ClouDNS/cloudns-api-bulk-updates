@@ -33,43 +33,43 @@ if (isset($login['status']) && $login['status'] == 'Failed') {
 	die($login['statusDescription']);
 }
 
-foreach ($zones as $zone) {
+foreach (explode("\n", $zones) as $zone) {
 	$zone = trim($zone);
 	if (empty($zone)) {
 		continue;
 	}
 	
-	$list = apiCall('dns/axfr-list.json', "domain-name={$zone['name']}");
+	$list = apiCall('dns/axfr-list.json', "domain-name={$zone}");
 	if (isset($list['status'])) {
-		echo "{$zone['name']}: {$list['status']}\n";
+		echo "{$zone}: {$list['status']}\n";
 		continue;
 	}
 		
 	$exist = false;
 	foreach ($list as $axfr) {
-		if ($axfr['ip'] != OLD_SLAVE_IP) {
+		if ($axfr['server'] != OLD_SLAVE_IP) {
 			continue;
 		}
 		
 		$exist = true;
-		$response = apiCall('dns/axfr-remove.json', "domain-name={$zone['name']}&id={$axr['id']}");
+		$response = apiCall('dns/axfr-remove.json', "domain-name={$zone}&id={$axfr['id']}");
 		if (isset($response['status'])) {
-			echo "{$zone['name']}: {$response['statusDescription']}\n";
+			echo "{$zone}: {$response['statusDescription']}\n";
 		} else {
-			echo "{$zone['name']}: old slave ip removed\n";
+			echo "{$zone}: old slave IP removed\n";
 		}
 
-		$response = apiCall('dns/axfr-add.json', "domain-name={$zone['name']}&ip=".NEW_SLAVE_IP);
+		$response = apiCall('dns/axfr-add.json', "domain-name={$zone}&ip=".NEW_SLAVE_IP);
 		if (isset($response['status'])) {
-			echo "{$zone['name']}: {$response['statusDescription']}\n";
+			echo "{$zone}: {$response['statusDescription']}\n";
 		} else {
-			echo "{$zone['name']}: new slave ip added\n";
+			echo "{$zone}: new slave IP added\n";
 		}
 		break;
 	}
 	
 	if (!$exist) {
-		echo "{$zone['name']}: slave ip doesn't exists in the list with slave ips\n";
+		echo "{$zone}: slave IP doesn't exists in the list with slave IPs\n";
 	}
 	
 }
