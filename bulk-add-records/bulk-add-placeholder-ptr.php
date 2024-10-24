@@ -65,7 +65,7 @@ function manageZoneRecords($baseDomain) {
 
         // Check if the current host is already in the array of existing hosts
         if (!in_array($host, $existingHosts)) {
-            $record = 'PLACEHOLDER.RECORD.local';
+            $record = 'PLACEHOLDER.RECORD.internal';
             $result = apiCall('dns/add-record.json', "domain-name={$baseDomain}&record-type=PTR&host={$host}&record={$record}&ttl=3600");
             if (isset($result['status']) && $result['status'] == 'Success') {
                 echo "Added PTR record for $host in $baseDomain\n" . $newLine;
