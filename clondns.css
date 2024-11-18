@@ -1,0 +1,1189 @@
+
+<!DOCTYPE html>
+
+<html lang="">
+	<head>
+				<title>Servicio de Monitoreo</title>
+				
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link rel="icon" type="image/png" href="/images/web/favicon.gif" />
+		
+		<script src="/js/jquery.min.js?ver=41838" type="text/javascript"></script>
+		<script src="/js/jquery.ui.js?ver=41838" type="text/javascript"></script>
+		<script src="/js/jquery.additional.min.js?ver=41838" type="text/javascript"></script>
+				<script src="/js/monitoring.js?ver=41838" type="text/javascript"></script>
+				
+		<link href="/css/additional.min.css?ver=41838" rel="stylesheet" type="text/css" />
+		
+					<link href="/css/fonts.css?ver=41838" rel="stylesheet" type="text/css" />
+				<link href="/css/new-style.css?ver=41838" rel="stylesheet" type="text/css" />
+		<link href="/css/icons.css?ver=41838" rel="stylesheet" type="text/css" />
+		<link href="/css/c-panel.css?ver=41838" rel="stylesheet" type="text/css" />
+		
+				<link href="/css/monitoring.css?ver=41838" rel="stylesheet" type="text/css" />
+				
+		<link href="/css/responsive.css?ver=41838" rel="stylesheet" type="text/css" />
+		<link href="/css/popup.css?ver=41838" rel="stylesheet" type="text/css" />
+		<link href="/css/header-responsive.css?ver=41838" rel="stylesheet" type="text/css" />
+		
+		
+								<link href="/css/darktheme.css?ver=41838" rel="stylesheet" type="text/css" defer />
+							
+						<script type="text/javascript">
+			var JQUERY_AJAX_STARTED = false;
+			var CLOUD_AJAX_STARTED = false;
+			var TIPSY_AJAX_STARTED = false;
+			var HCAPTCHA_AJAX_STARTED = false;
+			var CHART_AJAX_STARTED = false;
+			var LEAFLET_AJAX_STARTED = false;
+			var MAP_AJAX_STARTED = false;
+			
+										
+			function loadJs (callback, dependency) {
+				if (document.readyState !== 'complete') {
+					return setTimeout(function() {
+						loadJs(callback, dependency);
+					}, 500);
+				}
+				
+				if (typeof JQUERY_JS_FILE_LOADED === "undefined") {
+					TIPSY_JS_FILE_LOADED = undefined;
+					FITTEXT_JS_FILE_LOADED = undefined;
+					CLOUD_JS_FILE_LOADED = undefined;
+					
+					if (JQUERY_AJAX_STARTED === true) {
+						return setTimeout(function() {
+							loadJs(callback, dependency);
+						}, 1000);
+					} else {
+						var xhttp = new XMLHttpRequest();
+						xhttp.onreadystatechange = function() {
+							JQUERY_AJAX_STARTED = true;
+							if (this.readyState == 4 && this.status == 200) {
+								var response = JSON.parse(this.responseText);
+								(1,eval)(response.js);
+							}
+						}
+						xhttp.open("GET", "/ajaxActions.php?action=js&type=jquery&uid=796365", true);
+						xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+						xhttp.send(null);
+						
+						return setTimeout(function() {
+							loadJs(callback, dependency);
+						});
+					}
+				}
+				
+				if (typeof CLOUD_JS_FILE_LOADED === "undefined" || typeof JQUERY_JS_FILE_LOADED === "undefined") {
+					if (CLOUD_AJAX_STARTED === true) {
+						return setTimeout(function() {
+							loadJs(callback, dependency);
+						}, 1000);
+					} else {
+						CLOUD_AJAX_STARTED = true;
+						$.get('/ajaxActions.php?action=js', {
+							'type': 'cloud',
+							'uid': 796365						}, function (response) {
+							if (response.status) {
+								(1,eval)(response.js);
+							}
+						}, 'json');
+
+						return setTimeout(function() {
+							loadJs(callback, dependency);
+						});
+					}
+				}
+				
+				if (typeof JQUERY_JS_FILE_LOADED === "undefined" || typeof TIPSY_JS_FILE_LOADED === 'undefined') {
+					if (TIPSY_AJAX_STARTED === true) {
+						return setTimeout(function() {
+							loadJs(callback, dependency);
+						}, 1000);
+					} else {	
+						TIPSY_AJAX_STARTED = true;
+						$.get('/ajaxActions.php?action=js', {
+							'type': 'tipsy',
+							'uid': 796365						}, function (response) {
+							if (response.status && typeof TIPSY_JS_FILE_LOADED === "undefined") {
+								(1,eval)(response.js);
+							}
+						}, 'json');
+
+						return setTimeout(function() {
+							loadJs(callback, dependency);
+						});
+					}
+				}
+				if (dependency === 'hcaptcha' && (typeof(hcaptcha) === "undefined" || typeof(hcaptcha.getResponse) === "undefined")) {
+					if (HCAPTCHA_AJAX_STARTED === true) {
+						return setTimeout(function() {
+							loadJs(callback, dependency);
+						}, 1000);
+					} else {	
+						HCAPTCHA_AJAX_STARTED = true;
+						$.get('/ajaxActions.php?action=js', {
+							'type': 'hcaptcha',
+							'uid': 796365						}, function (response) {
+							if (response.status) {
+								(1,eval)(response.js);
+							}
+						}, 'json');
+
+						return setTimeout(function() {
+							loadJs(callback, dependency);
+						});
+					}
+				}
+				
+				if (dependency === 'chart' && typeof CHART_JS_FILE_LOADED === "undefined") {
+					if (CHART_AJAX_STARTED === true) {
+						return setTimeout(function() {
+							loadJs(callback, dependency);
+						}, 1000);
+					} else {	
+						CHART_AJAX_STARTED = true;
+						$.get('/ajaxActions.php?action=js', {
+							'type': 'chart',
+							'uid': 796365						}, function (response) {
+							if (response.status) {
+								(1,eval)(response.js);
+							}
+						}, 'json');
+
+						return setTimeout(function() {
+							loadJs(callback, dependency);
+						});
+					}
+				}
+				
+				if (dependency === 'leaflet' && typeof LEAFLET_JS_FILE_LOADED === "undefined") {
+					if (LEAFLET_AJAX_STARTED === true) {
+						return setTimeout(function() {
+							loadJs(callback);
+						}, 1000);
+					} else {
+						LEAFLET_AJAX_STARTED = true;
+						$.get('/ajaxActions.php?action=js', {
+							'type': 'leaflet',
+							'uid': 796365						}, function (response) {
+							if (response.status) {
+								(1,eval)(response.js);
+							}
+						}, 'json');
+						
+						return setTimeout(function() {
+							loadJs(callback);
+						});
+					}
+				}
+
+				if (dependency === 'map' && typeof MAP_JS_FILE_LOADED === "undefined") {
+					if (MAP_AJAX_STARTED === true) {
+						return setTimeout(function() {
+							loadJs(callback);
+						}, 1000);
+					} else {
+						MAP_AJAX_STARTED = true;
+						$.get('/ajaxActions.php?action=js', {
+							'type': 'map',
+							'uid': 796365						}, function (response) {
+							if (response.status) {
+								(1,eval)(response.js);
+							}
+						}, 'json');
+						
+						return setTimeout(function() {
+							loadJs(callback);
+						});
+					}
+				}
+				
+																	
+				if (typeof JQUERY_JS_FILE_LOADED !== "undefined" && typeof CLOUD_JS_FILE_LOADED !== "undefined" && typeof TIPSY_JS_FILE_LOADED !== 'undefined') {
+					callback();
+				}
+			}
+				
+			loadJs(function(){
+				$(function () {
+					$("a.tooltip, .header-tooltip, a.logout").tooltip({
+						track: true,
+						delay: 0,
+						showURL: false,
+						showBody: "<body>",
+						fade: 250 
+					});
+					
+						
+					checkDirection('ltr');
+
+											addTranslation('cart_menu', 'Cesta (%s)');
+									});
+			});
+		</script>		
+<script type="text/javascript">
+	loadJs(function(){
+		$(function () {
+			// unrewritable vars
+			var property = 'display';
+			var value = 'none';
+
+							var fontsSuffix = '';
+			
+			// load additional.min.css
+			var elId = "loadadditionalmin";
+			var checkElement = document.getElementById(elId);
+			if (window.getComputedStyle(checkElement).getPropertyValue(property) !== value) {
+				loadCSS (document.getElementById(elId), property, value, 'additionalmin');
+			}
+
+			// load fonts.css
+			var elId = "loadfonts" + fontsSuffix;
+			var checkElement = document.getElementById(elId);
+			if (window.getComputedStyle(checkElement).getPropertyValue(property) !== value) {
+				loadCSS (document.getElementById(elId), property, value, 'fonts' + fontsSuffix);
+			}
+
+			// load new-style.css
+			var elId = "loadNewStyle";
+			var checkElement = document.getElementById(elId);
+			if (window.getComputedStyle(checkElement).getPropertyValue(property) !== value) {
+				loadCSS (document.getElementById(elId), property, value, 'new-style');
+				setTimeout (function () {
+					loadAdditionals(true);
+				}, 100);
+			}
+
+			// load icons.css
+			var elId = "loadIcons";
+			var checkElement = document.getElementById(elId);
+			if (window.getComputedStyle(checkElement).getPropertyValue(property) !== value) {
+				loadCSS (document.getElementById(elId), property, value, 'icons');
+			}
+					
+			// load c-panel.css
+							var elId = "loadcpanel";
+				var checkElement = document.getElementById(elId);
+				if (window.getComputedStyle(checkElement).getPropertyValue(property) !== value) {
+					loadCSS (document.getElementById(elId), property, value, 'c-panel');
+				}
+						// load additional css
+			loadAdditionals();
+			function loadAdditionals (forced = false) {
+																																
+					var elId = "loadmonitoring";
+
+					if (forced == true) {
+						var forcedElem = 'forced-' + elId;
+					}
+					var checkElement = document.getElementById(elId);
+					
+					if (window.getComputedStyle(checkElement).getPropertyValue(property) !== value  || (typeof forcedElem != 'undefined' && forcedElem == 'forced-' + elId)) {
+						loadCSS (document.getElementById(elId), property, value, 'monitoring', forcedElem);
+						forcedElem = false;
+					}
+										}
+
+			// load responsive.css
+			var elId = "loadresponsive";
+			var checkElement = document.getElementById(elId);
+			if (window.getComputedStyle(checkElement).getPropertyValue(property) !== value) {
+				loadCSS (document.getElementById(elId), property, value, 'responsive');
+			}
+
+			// load popup.css
+			var elId = "loadpopup";
+			var checkElement = document.getElementById(elId);
+			if (window.getComputedStyle(checkElement).getPropertyValue(property) !== value) {
+				loadCSS (document.getElementById(elId), property, value, 'popup');
+			}
+
+			// load header-responsive.css
+			var elId = "loadheader-responsive";
+			var checkElement = document.getElementById(elId);
+			if (window.getComputedStyle(checkElement).getPropertyValue(property) !== value) {
+				loadCSS (document.getElementById(elId), property, value, 'header-responsive');
+			}
+
+			// load rtl.css
+					});
+	});
+	function loadCSS (checkElement, property, value, style, forced) {		
+		$(function () {
+			var forcedElem = 'forced-load' + style;
+			if (window.getComputedStyle(checkElement).getPropertyValue(property) !== value || (typeof forced != 'undefined' && forced == forcedElem)) {
+				$.get('/ajaxActions.php?action=css', {
+					'type': style,
+					'uid': 796365				}, function (response) {
+					if (typeof response === 'undefined') {
+						return setTimeout(function() {
+							loadCSS(checkElement, property, value, style, forced);
+						}, 1000);
+					}
+					if (response.status) {
+						var loadedStyle = response.css;
+						head = document.getElementsByTagName('head')[0];
+						link = document.createElement('style');
+						link.textContent = loadedStyle;
+						head.appendChild(link);
+					}
+				}, 'json');
+
+				setTimeout(function() {
+				if (window.getComputedStyle(checkElement).getPropertyValue(property) !== value || (typeof forced != 'undefined' && forced == forcedElem)) {
+					return setTimeout(function() {
+						loadCSS(checkElement, property, value, style);
+					}, 1000);
+				}
+				}, 1000);
+				
+			}
+		});
+	}
+</script>
+		
+	</head>
+	<body class="lang-es">
+		<div id="cloudOverlay"></div>
+		<div id="cloudPage">
+			<div id="cloudPageClose"></div>
+			<div id="cloudPageContent"></div>
+		</div>
+		<div id="cloudSecondOverlay"></div>
+		<div id="cloudMessage">
+			<div id="cloudMessageClose"></div>
+			<div id="cloudMessageContent"></div>
+		</div>
+		
+		<div class="popup" id="cloudnspop">
+			<div id="popupOverlay" class="overlay" onclick="hidePopup(0);"></div>
+			<div class="popup-wraper">
+				<button type="button" class="close-btn close-popup" aria-label="cerrar" onclick="hidePopup(0);">
+					<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 40 40"><path class="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30"></path></svg>
+				</button>
+				<div class="popup-content"></div>
+			</div>
+		</div>
+		
+		<div class="popup popup-message" id="popup-message">
+			<div id="popupSecondOverlay" class="overlay" onclick="hidePopupMessage(0);"></div>
+			<div class="popup-wraper">
+				<button type="button" class="close-btn close-popup" aria-label="cerrar" onclick="hidePopupMessage(0);">
+					<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 40 40"><path class="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30"></path></svg>
+				</button>
+				<div class="popup-content"></div>
+			</div>
+		</div>
+		
+		<div class="popup popup-confirmation a-c" id="popup-confirmation">
+			<div id="popupConfirmationOverlay" class="overlay" onclick="loadJs(function(){hideConfirmation(0);});"></div>
+			<div class="popup-wraper">
+				<button type="button" class="close-btn close-popup" aria-label="cerrar" onclick="loadJs(function(){hideConfirmation(0);});">
+					<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 40 40"><path class="close-x" d="M 10,10 L 30,30 M 30,10 L 10,30"></path></svg>
+				</button>
+			<div class="popup-content a-c"></div>
+			<div class="popup-buttons a-c">
+				<button onclick="loadJs(function(){hideConfirmation(0);});" class="round-btn m-btn x-bright-btn">cancelar</button>
+				<button onclick="loadJs(function(){hideConfirmation(1);});" class="round-btn m-btn color-btn">Bueno</button>
+			</div>
+		    </div>
+		</div>
+		
+		<div id="splashScreen">
+			<div class="lds-roller" id="splashImage"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+		</div>
+		
+				
+			
+					
+					
+		<header class="dashboard" id="headerDashboard">
+			<div class="wraper">
+				<a href="/" class="logo"></a>
+				<div class="mobile-settings-bar">
+									<div class="lang-bar mobile-lang-bar">
+											<a href="javascript:void(0);" onClick="loadJs(function(){showLanguages(event)}); return false;" class="drop-down">
+							<span class="lang lang-es"></span>
+						</a>
+						<ul class="drop-down-menu">
+																								<li >
+										<a href="/main/lang/en/">
+											<span class="lang lang-en"></span>
+											<span>English</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/ru/">
+											<span class="lang lang-ru"></span>
+											<span>Русский</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/de/">
+											<span class="lang lang-de"></span>
+											<span>Deutsch</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/fr/">
+											<span class="lang lang-fr"></span>
+											<span>Français</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/ro/">
+											<span class="lang lang-ro"></span>
+											<span>Română</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/bg/">
+											<span class="lang lang-bg"></span>
+											<span>Български</span>
+										</a>
+									</li>
+																																															<li >
+										<a href="/main/lang/pt/">
+											<span class="lang lang-pt"></span>
+											<span>Português</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/it/">
+											<span class="lang lang-it"></span>
+											<span>Italiano</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/pl/">
+											<span class="lang lang-pl"></span>
+											<span>Polski</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/sk/">
+											<span class="lang lang-sk"></span>
+											<span>Slovenský</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/ua/">
+											<span class="lang lang-ua"></span>
+											<span>Українська</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/tr/">
+											<span class="lang lang-tr"></span>
+											<span>Türkçe</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/jp/">
+											<span class="lang lang-jp"></span>
+											<span>日本語</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/hi/">
+											<span class="lang lang-hi"></span>
+											<span>हिंदी</span>
+										</a>
+									</li>
+																																<li  class="font-smaller" >
+										<a href="/main/lang/id/">
+											<span class="lang lang-id"></span>
+											<span>Bahasa Indonesia</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/he/">
+											<span class="lang lang-he"></span>
+											<span>עברית</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/chs/">
+											<span class="lang lang-chs"></span>
+											<span>简体中文</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/cht/">
+											<span class="lang lang-cht"></span>
+											<span>繁體中文</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/vn/">
+											<span class="lang lang-vn"></span>
+											<span>Tiếng Việt</span>
+										</a>
+									</li>
+																																<li >
+										<a href="/main/lang/ir/">
+											<span class="lang lang-ir"></span>
+											<span>فارسی</span>
+										</a>
+									</li>
+																					</ul>
+					</div>
+								</div>
+				<nav>
+					<ul>
+						<li>
+							<a href="/main/" class="active drop-down">Panel</a>
+							<ul class="drop-down-menu">
+								<li><a href="/main/dashboard/dns/">Alojamiento DNS </a></li>
+								<li><a href="/main/dashboard/monitoring/">Monitoreo</a></li>
+								<li><a href="/main/dashboard/domain-names/">Nombres de dominios</a></li>
+								<li><a href="/main/dashboard/ssl-certificates/">Certificados SSL</a></li>
+								<li><a href="/main/dashboard/google-workspace/">Google Workspace</a></li>
+							</ul>
+						</li>
+						<li class="cursor-default">
+							<a href="javascript: void(0);" class="drop-down cursor-default">Facturación</a>
+							<ul class="drop-down-menu">
+																								<li><a href="/billing/">Métodos de pago y Renovación Automática</a>
+								<li><a href="/orders/">Pedidos</a></li>
+								<li><a href="/invoices/">Facturas</a></li>
+								<li><a href="/balance/">Saldo de la Cuenta</a></li>
+								<li><a href="/vouchers/">Cupones</a></li>
+								<li><a href="/affiliate-program/">Programa de Afiliación </a></li>
+							</ul>
+						</li>
+						<li>
+							<a href="/jobs/">Herramientas</a>
+						</li>
+						
+						<li>
+							<a href="/api-settings/">API y Revendedores</a>
+						</li>
+						
+						<li class="cursor-default">
+							<a href="javascript: void(0);" class="drop-down cursor-default">Servicios</a>
+							<ul class="drop-down-menu">
+								<li><a href="/premium/">Premium DNS</a></li>
+								<li><a href="/ddos-protected-plans/">DDoS Protected</a>
+								<li><a href="/geodns/">GeoDNS</a></li>
+								<li><a href="/private-dns-servers/">Servidores DNS Privados</a></li>
+								<li><a href="/monitoring/">Servicio de Monitoreo</a></li>
+							</ul>
+						</li>
+						
+						<li class="cursor-default">
+							<a href="javascript: void(0);" class="drop-down cursor-default">
+								Soporte técnico															</a>
+							<ul class="drop-down-menu">
+								<li>
+									<a href="/support/">
+																					Tickets																			</a>
+								</li>
+																<li><a href="/livechat/">Live Chat</a></li>
+																<li><a href="/wiki/">Wiki</a></li>
+							</ul>
+						</li>
+					</ul>
+				</nav>
+				<aside>
+					<div>
+						<a href="/order/step/1/" class="icon icon-cart icon-white header-tooltip" id="cartHeaderProductsTitle" title="Cesta (0)" aria-label="Cesta (0)">
+						<span id="cartHeaderProducts" class="counter hidden">0</span>
+						</a>
+						
+																		<div class="lang-bar desktop-lang-bar">
+							<a href="javascript:void(0);" onClick="loadJs(function(){showLanguages(event)}); return false;" class="drop-down">
+								<span class="lang lang-es"></span>
+							</a>
+							<ul class="drop-down-menu">
+																											<li >
+											<a href="/main/lang/en/">
+												<span class="lang lang-en"></span>
+												English											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/ru/">
+												<span class="lang lang-ru"></span>
+												Русский											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/de/">
+												<span class="lang lang-de"></span>
+												Deutsch											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/fr/">
+												<span class="lang lang-fr"></span>
+												Français											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/ro/">
+												<span class="lang lang-ro"></span>
+												Română											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/bg/">
+												<span class="lang lang-bg"></span>
+												Български											</a>
+										</li>
+																																																					<li >
+											<a href="/main/lang/pt/">
+												<span class="lang lang-pt"></span>
+												Português											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/it/">
+												<span class="lang lang-it"></span>
+												Italiano											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/pl/">
+												<span class="lang lang-pl"></span>
+												Polski											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/sk/">
+												<span class="lang lang-sk"></span>
+												Slovenský											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/ua/">
+												<span class="lang lang-ua"></span>
+												Українська											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/tr/">
+												<span class="lang lang-tr"></span>
+												Türkçe											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/jp/">
+												<span class="lang lang-jp"></span>
+												日本語											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/hi/">
+												<span class="lang lang-hi"></span>
+												हिंदी											</a>
+										</li>
+																																				<li  class="font-smaller" >
+											<a href="/main/lang/id/">
+												<span class="lang lang-id"></span>
+												Bahasa Indonesia											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/he/">
+												<span class="lang lang-he"></span>
+												עברית											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/chs/">
+												<span class="lang lang-chs"></span>
+												简体中文											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/cht/">
+												<span class="lang lang-cht"></span>
+												繁體中文											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/vn/">
+												<span class="lang lang-vn"></span>
+												Tiếng Việt											</a>
+										</li>
+																																				<li >
+											<a href="/main/lang/ir/">
+												<span class="lang lang-ir"></span>
+												فارسی											</a>
+										</li>
+																								</ul>
+						</div>
+												<div class="theme-bar desktop-lang-bar">
+							<a href="javascript:void(0);" onClick="loadJs(function(){showThemes(event)}); return false;" class="drop-down">
+								<span class="theme icon icon-white icon-moon"></span>
+							</a>
+							<ul class="drop-down-menu">
+																	<li >
+										<a href="javascript: void(0);" onClick="changeTheme('light')">
+											<span class="theme icon icon-white icon-sun"></span>
+											<span>Light theme</span>
+										</a>
+									</li>
+																	<li >
+										<a href="javascript: void(0);" onClick="changeTheme('dark')">
+											<span class="theme icon icon-white icon-moon"></span>
+											<span>Dark theme</span>
+										</a>
+									</li>
+															</ul>
+						</div>
+					</div>
+				</aside>
+				<button class="mobile-nav-btn" id="mobileNavBtn" onClick="loadJs(function(){openMobileMenu()});"><span></span></button>
+				<div class="mobile-nav a-c">
+					<ul>
+						<li>
+														<a href="javascript: void(0);" onClick="loadJs(function(){changeTheme('light')});">
+								<span class="theme icon icon-white icon-sun"></span>
+								<span>Light theme</span>
+							</a>
+						</li>
+						<li  onClick="expandMobileMenu(this);">
+							<a href="javascript: void(0);" class="drop-down cursor-default">Panel</a>
+							
+							<ul class="drop-down-menu">
+								<li><a href="/main/">All services</a></li>
+								<li><a href="/main/dashboard/dns/">Alojamiento DNS </a></li>
+								<li><a href="/main/dashboard/monitoring/">Monitoreo</a></li>
+								<li><a href="/main/dashboard/domain-names/">Nombres de dominios</a></li>
+								<li><a href="/main/dashboard/ssl-certificates/">Certificados SSL</a></li>
+								<li><a href="/main/dashboard/google-workspace/">Google Workspace</a></li>
+							</ul>
+						</li>
+						<li onClick="expandMobileMenu(this);">
+							<a href="javascript: void(0);" class="drop-down cursor-default">Facturación</a>
+							<ul class="drop-down-menu">
+																								<li><a href="/billing/">Métodos de pago y Renovación Automática</a>
+								<li><a href="/orders/">Pedidos</a></li>
+								<li><a href="/invoices/">Facturas</a></li>
+								<li><a href="/balance/">Saldo de la Cuenta</a></li>
+								<li><a href="/vouchers/">Cupones</a></li>
+								<li><a href="/affiliate-program/">Programa de Afiliación </a></li>
+							</ul>
+						</li>
+						<li>
+							<a href="/jobs/">Herramientas</a>
+						</li>
+						
+						<li>
+							<a href="/api-settings/">API y Revendedores</a>
+						</li>
+						
+						<li onClick="expandMobileMenu(this);">
+							<a href="javascript: void(0);" class="drop-down cursor-default">Servicios</a>
+							<ul class="drop-down-menu">
+								<li><a href="/premium/">Premium DNS</a></li>
+								<li><a href="/ddos-protected-plans/">DDoS Protected</a>
+								<li><a href="/geodns/">GeoDNS</a></li>
+								<li><a href="/private-dns-servers/">Servidores DNS Privados</a></li>
+								<li><a href="/monitoring/">Servicio de Monitoreo</a></li>
+							</ul>
+						</li>
+						
+						<li  onClick="expandMobileMenu(this);">
+							<a href="javascript: void(0);" class="drop-down cursor-default">
+								Soporte técnico															</a>
+							<ul class="drop-down-menu">
+								<li>
+									<a href="/support/">
+																					Tickets																			</a>
+								</li>
+																<li><a href="/livechat/">Live Chat</a></li>
+																<li><a href="/wiki/">Wiki</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				
+			</div>
+		</header>
+			
+		<div class="sub-header">
+			<div class="wraper">
+				<ul>
+					<li class="overflowHidden">
+						<a aria-label="Configuración" title="Configuración:<br> fmendezespinoza967@gmail.com" href="/profile/" class="icon icon-settings header-tooltip subheader-mail">
+							fmendezespinoza967@gmail.com						</a>
+					</li>
+					<li>
+						<a area-label="Free DNS (Legacy 2024)" title="Free DNS (Legacy 2024)" href="/subscription/" class="icon icon-free header-tooltip user-data-tooltip" id="userDataPlan">
+							Free DNS (Legacy 2024)						</a>
+					</li>
+																													<li>
+						<a area-label="Free Monitoring" title="Free Monitoring" href="/subscription-monitoring/" class="icon icon-free header-tooltip">
+							Free Monitoring						</a>
+					</li>
+															<li>
+						<a href="/balance/" class="icon icon-wallet header-tooltip " aria-label="Saldo: $0.00" title="Saldo">
+							$0.00						</a>
+					</li>
+				</ul>
+				<div class="mobile-subheader">
+					<div class="overflowHidden">
+						<a aria-label="Menú" title="Menú" href="javascript: void(0)" class="header-tooltip subheader-mail" onClick="openSubheaderMenu();">
+							fmendezespinoza967@gmail.com						</a>
+						<button class="open-drop-down" onClick="openSubheaderMenu();"></button>
+					</div>
+					<div class="menu" id="subHeaderMobileMenu">
+						<ul>
+							<li>
+								<a aria-label="Configuración" title="Configuración" href="/profile/" class="icon icon-settings header-tooltip">Configuración</a>
+							</li>
+							<li>
+								<a  href="/subscription/" class="icon icon-free header-tooltip user-data-tooltip" id="userDataPlan">Free DNS (Legacy 2024)								</a>
+							</li>
+														<li>
+								<a  href="/subscription-monitoring/" class="icon icon-free header-tooltip">
+																	Free Monitoring
+															</a>
+							</li>
+																					<li>
+								<a href="/balance/" class="icon icon-wallet header-tooltip  " aria-label="Saldo: $0.00" title="Saldo">
+									$0.00								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<a href="/logout/" class="login icon icon-on-off"> <span>Finalizar la sesión</span></a>
+			</div>
+		</div>
+
+<section class="wraper section-row">
+	<div id="zone-name-wraper" class="wraper w-b b-r zone-name ww-bw">
+		<div class="qsw">
+		<h3 id="monitoring-heading" class="on-870 heading">
+			<button class="btn-search icon icon-search icon-dark off-870" title="Mostrar la búsqueda rápida" aria-label="Mostrar búsqueda rápida de zonas " onClick="showQuickSearch(this);"></button>&nbsp;
+			<span id="monitoringRecordTitle" title="www.github.com" class="showTitle">www.github.com</span> 
+			
+							
+			&nbsp;&nbsp;<span class="showTitle nowrap" title="Estado: UNKNOWN" style="color: grey">UNKNOWN</span>
+				
+		</h3>
+		<div class="qswWraper hidden"><div class="f-l off-870 quickSearchWraper"> </div></div>
+		</div>
+		
+				<div class="zones-button-options">
+									<button class="round-btn x-bright-btn xs-btn" onClick="showPopup('monitoring-records', '&show=share-settings&record=97710');">Compartir</button>
+						<button class="round-btn x-bright-btn xs-btn" onClick="showPopup('monitoring-records', '&show=notifications&record=97710');">Notificaciones</button>
+			<button class="round-btn x-bright-btn xs-btn" onClick="showPopup('monitoring-records', '&show=settings&record=97710');">Configuración</button>
+						<button type="button" class="round-btn x-bright-btn xs-btn" onClick="return monitoring_deactivate(97710, 'Este servicio de monitoreo y todos los datos de historial relacionados serán eliminados. ¿Está seguro de que desea eliminar esta comprobación de monitoreo?');">Eliminar </button>
+					</div>
+		
+				<div class="zones-button-menu domains-button-menu menu f-r">
+			<button class="icon icon-menu-v" onClick="toggleZoneButtonMenu(97710)" aria-label="menu"></button>
+			<ul id="button-menu-97710">
+												<li>
+					<a href="javascript: void(0);" onClick="showPopup('monitoring-records', '&show=share-settings&record=97710');">Compartir</a>
+				</li>
+								<li>
+					<a href="javascript: void(0);" onClick="showPopup('monitoring-records', '&show=notifications&record=97710');">Notificaciones</a>
+				</li>
+				<li>
+					<a href="javascript: void(0);" onClick="showPopup('monitoring-records', '&show=settings&record=97710');">Configuración</a>
+				</li>
+								<li>
+					<a href="javascript: void(0);" onClick="return monitoring_deactivate(97710, 'Este servicio de monitoreo y todos los datos de historial relacionados serán eliminados. ¿Está seguro de que desea eliminar esta comprobación de monitoreo?');">Eliminar</a>
+				</li>
+							</ul>
+		</div>
+	</div>
+</section>
+
+<section class="wraper section-row">
+	
+	<div class="b-r ww-bw">
+		<div class="monitoring-log-table-wraper uptime-table-wraper">
+			<h2 class="w-100">
+				Cambios en el tiempo de actividad							</h2>
+			<div id="monitoring_uptime_table" class="table-h-scroll fo_actions_table"></div>
+		</div>
+				<br>		
+				<div class="monitoring-log-table-wraper history-table-wraper">
+			<h2 class="w-100" id="monitoringHistory">
+				Historial de Monitoreo							</h2>
+			<div id="fo_monitoring_table" class="table-h-scroll fo_actions_table"></div>
+		</div>
+		<br>
+		<br>
+						<div class="a-c w-100">
+			<button type="button" class="round-btn s-btn bright-btn" onClick="return monitoring_deactivate(97710, 'Este servicio de monitoreo y todos los datos de historial relacionados serán eliminados. ¿Está seguro de que desea eliminar esta comprobación de monitoreo?');">Eliminar este registro de monitoreo  </button>
+		</div>
+			</div>
+</section>
+
+<script type="text/javascript">
+	loadJs(function() {
+		$(function () {
+			dashboard_monitoringChangeType();
+			monitoring_uptime_log(97710);
+			monitoring_log(97710, '1', '', '', '');
+
+			$('.info, .showTitle').tooltip({
+				track: true,
+				delay: 0,
+				showURL: false,
+				showBody: "<body>",
+				fade: 250 
+			});
+
+			$(window).resize(function() {
+				dashboard_monitoringChangeType();
+			});
+		});
+	});
+</script>
+
+				
+			<div class="clear"></div>
+			
+		<footer>
+			<section class="section-wraper flex-4-col">
+				<div class="col">
+					<ul class="a-l">
+						<li>Alojamiento DNS </li>
+						<li><a href="/premium/">Premium DNS</a></li>
+						<li><a href="/ddos-protected-plans/">DNS protegido de DDoS</a></li>
+						<li><a href="/geodns/">GeoDNS</a></li>
+						<li><a href="/enterprise-dns/">Enterprise DNS</a></li>
+					</ul>
+				</div>
+				<div class="col off on-870">
+					<div class="footer-mbl-link">
+						<a href="/monitoring/" class="a-title">Monitoreo</a>
+					</div>
+					<ul class="a-l">
+						<li class="footer-mbl-link-list"></li>
+						<li><a href="/dns-monitoring/">DNS</a></li>
+						<li><a href="/web-monitoring/">Web</a></li>
+						<li><a href="/udp-monitoring/">UDP</a></li>
+						<li><a href="/tcp-monitoring/">TCP</a></li>
+						<li><a href="/ping-monitoring/">ICMP Ping</a></li>
+						<li><a href="/heartbeat-monitoring/">Heartbeat</a></li>
+						<li><a href="/ssl-monitoring/ ">SSL/TLS</a></li>
+						<li><a href="/firewall-monitoring/ ">Firewall</a></li>
+						<li><a href="/smtp-monitoring/ ">SMTP</a></li>
+						<li><a href="/streaming-monitoring/ ">Streaming</a></li>
+					</ul>
+				</div>
+				<div class="col">
+					<div class="footer-mbl-link">
+						<a href="/dns-services/" class="a-title">Servicios</a>
+					</div>
+					<ul class="a-l">
+						<li class="footer-mbl-link-list"></li>
+						<li><a href="/dynamic-dns/">DNS Dinámico</a></li>
+						<li><a href="/reverse-dns/">DNS Inverso</a></li>
+						<li><a href="/dns-failover/">DNS Failover</a></li>
+						<li><a href="/managed-dns/">Managed DNS</a></li>
+						<li><a href="/monitoring/">Monitoreo</a></li>
+						<li><a href="/google-workspace/">Google Workspace</a></li>
+						<li><a href="/ssl-certificates/">Certificados SSL</a></li>
+						<li><a href="/domain-parking/">Estacionamiento de dominio</a></li>
+						<li><a href="https://www.cloudprima.com/?utm_source=footer&amp;utm_campaign=ClouDNS+Web" target="_blank">VPS Protegido de DDoS</a></li>
+					</ul>
+				</div>
+				<div class="col">
+					<div class="footer-mbl-link">&nbsp;</div>
+					<ul class="a-l">
+						<li class="footer-mbl-link-list"></li>
+						<li><a href="/secondary-dns/">DNS Secundario</a></li>
+						<li><a href="/dnssec/">DNSSEC</a></li>
+						<li><a href="/dns-backups/">DNS backups</a></li>
+						<li><a href="/anycast-dns/">Anycast DNS</a></li>
+						<li><a href="/email-forwarding/">Email Forwarding</a></li>
+						<li><a href="/domain-pricing-list/">Nombres de dominios</a></li>
+						<li><a href="/private-dns-servers/">Servidores DNS Privados</a></li>
+						<li><a href="/dns-for-tlds/">DNS for TLDs</a></li>
+					</ul>
+				</div>
+				<div class="col off-870">
+					<div>
+						<a href="/monitoring/" class="a-title">Monitoreo</a>
+					</div>
+					<ul class="a-l">
+						<li></li>
+						<li><a href="/dns-monitoring/">DNS</a></li>
+						<li><a href="/web-monitoring/">Web</a></li>
+						<li><a href="/udp-monitoring/">UDP</a></li>
+						<li><a href="/tcp-monitoring/">TCP</a></li>
+						<li><a href="/ping-monitoring/">ICMP Ping</a></li>
+						<li><a href="/heartbeat-monitoring/">Heartbeat</a></li>
+						<li><a href="/ssl-monitoring/ ">SSL/TLS</a></li>
+						<li><a href="/firewall-monitoring/ ">Firewall</a></li>
+						<li><a href="/smtp-monitoring/ ">SMTP</a></li>
+						<li><a href="/streaming-monitoring/ ">Streaming</a></li>
+					</ul>
+				</div>
+			</section>
+
+			<section class="section-wraper flex-4-col">
+				<div class="col">
+					<ul>
+						<li>Compañia</li>
+						<li><a href="/about-us/">Acerca de nosotros</a></li>
+						<li><a href="/news/">Noticias</a></li>
+						<li><a href="/contact/">Contacto</a></li>
+						<li><a href="/data-centers/">Centros de datos</a></li>
+						<li><a href="/media-and-reviews/">Medios y Reseñas</a></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/feedback/">Retroalimentación</span></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/careers/">Carreras</span></li>
+					</ul>
+				</div>
+				<div class="col">
+					<ul>
+						<li>Base de Conocimientos</li>
+						<li><a href="https://www.cloudns.net/blog/">Blog</a></li>
+						<li><a href="/wiki/">Wiki</a></li>
+						<li><a href="/case-studies/">Case studies</a></li>
+						<li><a href="/features/">Características</a></li>
+						<li><a href="/faq/">Preguntas Frecuentes</a></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/api-help/">HTTP API</span></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/whmcs-module/">WHMCS module</span></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/hostbill-module/">Hostbill module</span></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/payment-methods/">Métodos de pago</span></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/tools/">Herramienta DNS</span></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/spf-generator/">Generador de SPF</span></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/dmarc-generator/">Generador DMARC</span></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/nslookup-tool/">NSlookup tool</span></li>
+					</ul>
+				</div>
+				<div class="col">
+					<ul class="a-l">
+						<li>Socios</li>
+						<li><a href="/affiliate/">Programa de Afiliación</a></li>
+						<li><a href="/resellers-api/">Revendedores</a></li>
+					</ul>
+					<br>
+					<ul class="a-l">
+						<li></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/wiki/article/92/" data-target="_blank">Registrant Educational Materials</span></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/wiki/article/92/" data-target="_blank">Registrant Benefits and Responsibilities</span></li>
+						<li><span class="a" onclick="openLink(this)" data-href="/wiki/article/92/" data-target="_blank">Whois</span></li>
+					</ul>
+				</div>
+								<div class="col a-r social-links">
+					<ul>
+						<li>Conexión social </li>
+						<li>
+							<span class="a sl-fb" onclick="openLink(this)" data-href="http://www.facebook.com/cloudns" data-target="_blank"></span>
+							<span class="a sl-twitter" onclick="openLink(this)" data-href="http://www.twitter.com/ClouDNS" data-target="_blank"></span>
+							<span class="a sl-git-hub" onclick="openLink(this)" data-href="https://github.com/ClouDNS" data-target="_blank"></span>
+							<span class="a sl-li" onclick="openLink(this)" data-href="https://www.linkedin.com/company/cloud-dns-ltd" data-target="_blank"></span>
+							<span class="a sl-v-kontakt" onclick="openLink(this)" data-href="https://vk.com/cloudns" data-target="_blank"></span>
+							<span class="a sl-youtube" onclick="openLink(this)" data-href="https://www.youtube.com/c/CloudnsNet" data-target="_blank"></span>
+						</li>
+						<li><a href="/certificates/" class="footer-certificate"></a></li>
+					</ul>
+				</div>
+							</section>
+
+			<section class="wraper flex-2-col">
+				<div class="col">
+					<span class="a" onclick="openLink(this)" data-href="/tos/">Terms of service</span>&nbsp; | &nbsp;
+					<span class="a" onclick="openLink(this)" data-href="/privacy-policy/">Privacy Policy</span>&nbsp; | &nbsp;
+					<span class="a" onclick="openLink(this)" data-href="/licenses/">Licenses</span><br><br>
+					<p class="pb-0">&copy;2024  ClouDNS</p>
+				</div>
+				<div class="col a-r">
+					<a href="https://www.cloudns.net/" class="footer-logo"></a><br>
+				</div>
+			</section>
+			<section class="wraper">
+				<p class="a-c">
+					Todos los precios son finales e incluyen todos los impuestos requeridos. ¡No hay otros cargos ocultos! 				</p>
+			</section>
+		</footer>
+		
+				<a href="/livechat/">
+			<div class="livechat-footer">
+				Online - Live Chat
+			</div>
+		</a>
+				
+				<div id="cookiesAlert" class="a-c">
+			Las cookies nos ayudan a ofrecer nuestros servicios. Al utilizar nuestros servicios, usted acepta nuestro uso de cookies. <a href="/privacy-policy/">Leer más</a> <button class="round-btn s-btn dark-btn" onclick="loadJs(function(){hideCookiesAlert()});" >Bueno</button>
+		</div>
+		
+		<script type="text/javascript">
+						
+			loadJs(function () {
+				$(function() {
+					var checkResponse = '';
+					function logJsError (msg, url, line, col, error, lastclicked, timestamp, part) {
+						var extra = !col ? '' : '\nColumn: ' + col;
+						$.post(AJAXACTIONS_URL + '?action=errorlog', {
+							'action': 'log',
+							'error': msg,
+							'url': url + ' (Part ' + part + '/2)',
+							'line': line,
+							'extra': extra,
+							'lastClicked': lastclicked,
+							'lastClickedTimestamp': timestamp,
+							'timestampErrorSent': Math.floor(Date.now() / 1000 - 0.1),
+							'errorStack': error.stack,
+							'part' : part
+						}, function (data) {
+							response = $.parseJSON(data);
+							checkResponse = response.status;
+						});
+					}
+					
+					function sendSecondPart (lasterror, lastclicked, timestmp, part) {
+						if (checkResponse === '') {
+							return setTimeout(function() {
+								sendSecondPart(lasterror, lastclicked, timestmp, part);
+							}, 100);
+						} else {
+							if (checkResponse == 1) {
+								logJsError('', '', '', '', lasterror, lastclicked, timestmp, part);
+							}
+							checkResponse = '';
+						}
+					}
+					
+					var MY_LAST_ERROR = {'stack':'undefined'};
+					var lastClicked = 'undefined';
+					var lastClickedTimestamp = 1731951599;
+					$('body').on('click', function(e) {
+						lastClicked = e.target;
+						lastClickedTimestamp = Math.floor(Date.now() / 1000);
+					});
+					window.onerror = function(msg, url, line, col, error) {
+						if (typeof error === 'undefined') {
+							error = {stack : 'notdefined'};
+							logJsError(msg, url, line, col, error, '', '', '1');
+						} else {
+							logJsError(msg, url, line, col, error, '', '', '1');
+						}
+						// timeout to ensure that onClick has finished
+						setTimeout (function() {
+							sendSecondPart(MY_LAST_ERROR, '<' + lastClicked.nodeName + '>, ID: ' + lastClicked.id + ', Class: ' + lastClicked.className, lastClickedTimestamp, '2');
+						}, 100);
+						// suppress error from showing in Console
+						return true;
+					};
+					
+									});
+			});
+		</script>
+		
+				<script async src="https://www.googletagmanager.com/gtag/js?id=G-YTMCW6TB90"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		  gtag('config', 'G-YTMCW6TB90');
+		</script>
+
+		
+				
+				
+				
+		<script type="application/ld+json">{"@context":"http:\/\/schema.org","@type":"Organization","name":"ClouDNS","url":"https:\/\/www.cloudns.net\/","logo":"https:\/\/www.cloudns.net\/images\/logo\/logo-white-net-155x68.png","sameAs":["http:\/\/www.facebook.com\/cloudns","http:\/\/www.twitter.com\/ClouDNS","https:\/\/github.com\/ClouDNS","https:\/\/vk.com\/cloudns","https:\/\/www.linkedin.com\/company\/cloud-dns-ltd","https:\/\/www.youtube.com\/c\/CloudnsNet"]}</script>
+		<div id="loadadditionalmin"></div>
+			<div id="loadfonts"></div>
+			<div id="loadNewStyle"></div>
+		<div id="loadIcons"></div>
+			<div id="loadcpanel"></div>
+			
+													<div id="loadmonitoring"></div>
+			
+		<div id="loadresponsive"></div>
+		<div id="loadpopup"></div>
+		<div id="loadheader-responsive"></div>
+		
+		</body>
+</html>
