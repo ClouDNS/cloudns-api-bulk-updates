@@ -1,77 +1,102 @@
 <?php
 
-// Auth ID and Password
-define("AUTH_ID", 0);
-define("AUTH_PASS", "xxx");
+// === ClouDNS Authentication Credentials ===
+// Replace XXX with your actual ClouDNS API ID and Password
+define("AUTH_ID", XXX);
+define("AUTH_PASS", "XXX");
 
-// IP address of the master server (primary server)
+// IP address of your primary DNS server
 define("MASTER_IP", "xxx.xxx.xxx.xxx");
 
-// Second IP address for master server (it may be IPv6 or IPv4 address)
-//define("MASTER_IP2", "xxx.xxx.xxx.xxx");
+// Optional second master server IP (uncomment and set if needed)
+// define("MASTER_IP2", "xxx.xxx.xxx.xxx");
 
-// the directory with the zone files, their names are used to create the slave zones, not the content of the files
+// Directory where your BIND .db zone files are located
 define("ZONES_DIR", "/var/named/");
-// this file will contain a list of files that are not dns zone files and there won't be a request to be added the next time the script runs
-define("TMPFILE", "/tmp/cloudns_invalid-zone-names.txt");
 
-if ((file_exists(TMPFILE) && !is_writable(TMPFILE)) || (!file_exists(TMPFILE) && !is_writable(dirname(TMPFILE)))) {
-	die("TMPFILE (".TMPFILE.") is not writable. Please make it writable to continue or update the config option to a new path.");
+// === Compatibility Helper ===
+// PHP < 8.0 doesn't have str_ends_with(), so we define it if missing
+if (!function_exists('str_ends_with')) {
+    function str_ends_with($haystack, $needle) {
+        return substr($haystack, -strlen($needle)) === $needle;
+    }
 }
 
-// function to connect to the API
-function apiCall ($url, $data) {
-	$url = "https://api.cloudns.net/{$url}";
-	$data = "auth-id=".AUTH_ID."&auth-password=".AUTH_PASS."&{$data}";
-	$init = curl_init();
-	curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($init, CURLOPT_URL, $url);
-	curl_setopt($init, CURLOPT_POST, true);
-	curl_setopt($init, CURLOPT_POSTFIELDS, $data);
-	curl_setopt($init, CURLOPT_USERAGENT, 'cloudns_api_script/0.1 (+https://github.com/ClouDNS/cloudns-api-bulk-updates/tree/master/cpanel-slave-zones-add)');
-	$content = curl_exec($init);
-	curl_close($init);
-	return json_decode($content, true);
+// === ClouDNS API Request Function ===
+// This function performs a POST request to the ClouDNS API
+function apiCall($url, $data) {
+    $url = "https://api.cloudns.net/{$url}";
+    $data = "auth-id=" . AUTH_ID . "&auth-password=" . AUTH_PASS . "&{$data}";
+
+    $init = curl_init();
+    curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($init, CURLOPT_URL, $url);
+    curl_setopt($init, CURLOPT_POST, true);
+    curl_setopt($init, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($init, CURLOPT_USERAGENT, 'cloudns_api_script/0.1');
+    $content = curl_exec($init);
+    curl_close($init);
+
+    return json_decode($content, true);
 }
 
-// checking if we can log in successfully
+// === Step 1: Authenticate with ClouDNS ===
 $login = apiCall('dns/login.json', "");
-if (isset($login['status']) && $login['status'] == 'Failed') {
-	die($login['statusDescription']);
+if (isset($login['status']) && $login['status'] === 'Failed') {
+    die("Login failed: " . $login['statusDescription'] . "\n");
 }
 
-// gets the content of the file
-$invalid_zones = file(TMPFILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+// === Step 2: Load .db Files from Zone Directory ===
+// This filters out all non-.db files, then sorts the list alphabetically
+$zoneFiles = array_filter(scandir(ZONES_DIR), fn($f) => str_ends_with($f, '.db'));
+sort($zoneFiles);
 
-// gets the zone files names
-$handle = opendir(ZONES_DIR);
-if ($handle) {
-	// loops through the files
-	while (false !== ($zoneName = readdir($handle))) {
-		// checks if the zone name is invalid and if not adds the slave zone
-		if (in_array($zoneName, $invalid_zones)) {
-			continue;
-		}
+// === Initialize Counters ===
+$added = 0;          // Zones successfully added
+$failed = 0;         // Zones that failed due to other errors
+$limit_reached = 0;  // Zones that failed specifically due to "Zone limit reached"
 
-		// check file format
-		if (!strpos($zoneName, '.db')) {
-			file_put_contents(TMPFILE, $zoneName."\n", FILE_APPEND);
-			continue;
-		}
-		$zoneName = preg_replace('/\.db$/', '', $zoneName);
+echo "== Starting zone sync from " . ZONES_DIR . " to ClouDNS ==\n";
 
-		//calling the api
-		$response = apiCall('dns/register.json', "domain-name={$zoneName}&zone-type=slave&master-ip=".MASTER_IP);
-		// if the api returns the zone is invalid we put it in the file with the invalid zones
-		if ($response['status'] == 'Failed') {
-			file_put_contents(TMPFILE, $zoneName.".db\n", FILE_APPEND);
-			continue;
-		}
-		
-		if (defined('MASTER_IP2')) {
-			apiCall('dns/add-master-server.json', "domain-name={$zoneName}&master-ip=".MASTER_IP2);
-		}
-	}
+// === Step 3: Process Each Zone File ===
+foreach ($zoneFiles as $zoneFile) {
+    echo "Processing: {$zoneFile}... ";
 
-	closedir($handle);
+    // Strip ".db" extension to get the domain name
+    $zoneShort = preg_replace('/\.db$/', '', $zoneFile);
+
+    // Attempt to register the zone as a slave
+    echo "registering '{$zoneShort}' as slave... ";
+    $response = apiCall('dns/register.json', "domain-name={$zoneShort}&zone-type=slave&master-ip=" . MASTER_IP);
+
+    // Handle failed API response
+    if (isset($response['status']) && $response['status'] === 'Failed') {
+        $desc = $response['statusDescription'] ?? 'Unknown error';
+        echo "FAILED: {$desc}\n";
+
+        // Check for specific error: "Zone limit reached"
+        if (stripos($desc, 'Zone limit') !== false) {
+            $limit_reached++;
+        } else {
+            $failed++;
+        }
+
+        continue; // Skip to next file
+    }
+
+    // If registration succeeded
+    echo "success.\n";
+    $added++;
+
+    // Optional: Add second master IP if defined
+    if (defined('MASTER_IP2') && constant('MASTER_IP2')) {
+        echo " -> Adding second master IP: " . MASTER_IP2 . "\n";
+        apiCall('dns/add-master-server.json', "domain-name={$zoneShort}&master-ip=" . MASTER_IP2);
+    }
 }
+
+// === Final Summary ===
+echo "\n== Sync Summary ==\n";
+echo "Zones added:        {$added}\n";
+echo "Failures:           {$failed}\n";
+echo "Zone limit reached: {$limit_reached}\n";
