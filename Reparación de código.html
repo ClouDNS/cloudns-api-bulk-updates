@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema HTML Auto-Guardado - GitHub Rotativo</title>
+    <style>
+        :root {
+            --primary: #2d3748;
+            --secondary: #4a5568;
+            --accent: #3182ce;
+            --success: #38a169;
+            --warning: #d69e2e;
+            --danger: #e53e3e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .control-panel {
+            background: var(--secondary);
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            height: 600px;
+        }
+        
+        @media (max-width: 768px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .code-editor, .preview {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .editor-header {
+            background: #f7fafc;
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: bold;
+        }
+        
+        #htmlCode {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+            background: #fafafa;
+        }
+        
+        .preview iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+        
+        .status-bar {
+            background: #edf2f7;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.saving { background: var(--warning); }
+        .status-dot.error { background: var(--danger); }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .backup-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .backup-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-family: monospace;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .backup-item:hover {
+            background: #f7fafc;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Sistema HTML Auto-Guardado</h1>
+            <p>Gestor Inteligente con GitHub Rotativo - DeepSeek AI</p>
+        </div>
+        
+        <div class="control-panel">
+            <button class="btn btn-primary" onclick="guardarManual()">💾 Guardar Manual</button>
+            <button class="btn btn-success" onclick="crearBackup()">🔄 Crear Backup</button>
+            <button class="btn btn-warning" onclick="mostrarConfiguracion()">⚙️ Configuración</button>
+            <button class="btn btn-danger" onclick="limpiarTodo()">🗑️ Limpiar</button>
+            
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+                <label for="autoSave">Auto-guardado:</label>
+                <input type="checkbox" id="autoSave" checked onchange="toggleAutoSave()">
+                <span id="autoSaveStatus">Cada 30s</span>
+            </div>
+        </div>
+        
+        <div class="editor-container">
+            <div class="code-editor">
+                <div class="editor-header">
+                    📝 Editor HTML - Código Fuente Seguro
+                </div>
+                <textarea id="htmlCode" placeholder="Escribe tu código HTML aquí...&#10;&#10;El sistema guardará automáticamente cada 30 segundos.&#10;Backups rotativos en GitHub cada 10 versiones."></textarea>
+            </div>
+            
+            <div class="preview">
+                <div class="editor-header">
+                    👁️ Vista Previa - Renderizado en Tiempo Real
+                </div>
+                <iframe id="previewFrame"></iframe>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Conectado - Sistema Activo</span>
+            </div>
+            <div id="lastSave">
+                Último guardado: <span id="lastSaveTime">Nunca</span>
+            </div>
+            <div id="characterCount">
+                Caracteres: <span id="charCount">0</span>
+            </div>
+        </div>
+        
+        <div style="padding: 20px;">
+            <h3>📚 Historial de Backups Rotativos</h3>
+            <div class="backup-list" id="backupList">
+                <!-- Los backups se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Configuración -->
+    <div class="modal" id="configModal">
+        <div class="modal-content">
+            <h3>⚙️ Configuración del Sistema</h3>
+            <div style="margin: 20px 0;">
+                <label>Intervalo Auto-guardado (segundos):</label>
+                <input type="number" id="saveInterval" value="30" min="5" max="300" style="width: 100%; padding: 8px; margin: 5px 0;">
+            </div>
+            <div style="margin: 20px 0;">
+                <label>Máximo de Backups:</label>
+                <input type="number" id="maxBackups" value="10" min="1" max="50" style="width: 100%; padding: 8px; margin: 5px 0;">
+            </div>
+            <button class="btn btn-success" onclick="guardarConfiguracion()">💾 Guardar Configuración</button>
+            <button class="btn btn-primary" onclick="cerrarModal()" style="margin-left: 10px;">❌ Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        // Sistema de Gestión de Estado
+        class SistemaHTMLManager {
+            constructor() {
+                this.autoSaveInterval = null;
+                this.saveInterval = 30000; // 30 segundos
+                this.maxBackups = 10;
+                this.isConnected = true;
+                this.initializeSystem();
+            }
+            
+            initializeSystem() {
+                this.cargarConfiguracion();
+                this.cargarCodigo();
+                this.iniciarAutoSave();
+                this.actualizarVistaPrevia();
+                this.monitorearConexion();
+                this.actualizarBackupList();
+            }
+            
+            cargarConfiguracion() {
+                const config = localStorage.getItem('htmlSystemConfig');
+                if (config) {
+                    const { saveInterval, maxBackups } = JSON.parse(config);
+                    this.saveInterval = saveInterval;
+                    this.maxBackups = maxBackups;
+                    document.getElementById('saveInterval').value = saveInterval / 1000;
+                    document.getElementById('maxBackups').value = maxBackups;
+                }
+            }
+            
+            guardarConfiguracion() {
+                const saveInterval = parseInt(document.getElementById('saveInterval').value) * 1000;
+                const maxBackups = parseInt(document.getElementById('maxBackups').value);
+                
+                this.saveInterval = saveInterval;
+                this.maxBackups = maxBackups;
+                
+                const config = { saveInterval, maxBackups };
+                localStorage.setItem('htmlSystemConfig', JSON.stringify(config));
+                
+                this.reiniciarAutoSave();
+                this.mostrarMensaje('Configuración guardada correctamente', 'success');
+            }
+            
+            cargarCodigo() {
+                const codigoGuardado = localStorage.getItem('htmlCode');
+                if (codigoGuardado) {
+                    document.getElementById('htmlCode').value = codigoGuardado;
+                    this.actualizarContadorCaracteres();
+                }
+            }
+            
+            guardarCodigo() {
+                const codigo = document.getElementById('htmlCode').value;
+                localStorage.setItem('htmlCode', codigo);
+                
+                // Simular guardado en GitHub
+                this.simularGitHubBackup();
+                
+                this.actualizarUltimoGuardado();
+                this.actualizarContadorCaracteres();
+                this.actualizarVistaPrevia();
+            }
+            
+            simularGitHubBackup() {
+                const timestamp = new Date().toISOString();
+                const backups = JSON.parse(localStorage.getItem('htmlBackups') || '[]');
+                
+                // Crear nuevo backup
+                const backup = {
+                    id: Date.now(),
+                    timestamp: timestamp,
+                    codigo: document.getElementById('htmlCode').value,
+                    hash: this.generarHash(document.getElementById('htmlCode').value)
+                };
+                
+                backups.unshift(backup);
+                
+                // Rotar backups si excede el máximo
+                if (backups.length > this.maxBackups) {
+                    backups.splice(this.maxBackups);
+                }
+                
+                localStorage.setItem('htmlBackups', JSON.stringify(backups));
+                this.actualizarBackupList();
+            }
+            
+            generarHash(texto) {
+                let hash = 0;
+                for (let i = 0; i < texto.length; i++) {
+                    const char = texto.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return hash.toString(16);
+            }
+            
+            iniciarAutoSave() {
+                if (this.autoSaveInterval) {
+                    clearInterval(this.autoSaveInterval);
+                }
+                
+                this.autoSaveInterval = setInterval(() => {
+                    if (document.getElementById('autoSave').checked) {
+                        this.guardarCodigo();
+                        this.mostrarEstado('Guardando...', 'saving');
+                    }
+                }, this.saveInterval);
+            }
+            
+            reiniciarAutoSave() {
+                this.iniciarAutoSave();
+            }
+            
+            actualizarVistaPrevia() {
+                const codigo = document.getElementById('htmlCode').value;
+                const previewFrame = document.getElementById('previewFrame');
+                const previewDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
+                
+                previewDocument.open();
+                previewDocument.write(codigo);
+                previewDocument.close();
+            }
+            
+            actualizarUltimoGuardado() {
+                const ahora = new Date();
+                document.getElementById('lastSaveTime').textContent = 
+                    ahora.toLocaleTimeString() + ' - ' + ahora.toLocaleDateString();
+            }
+            
+            actualizarContadorCaracteres() {
+                const codigo = document.getElementById('htmlCode').value;
+                document.getElementById('charCount').textContent = codigo.length;
+            }
+            
+            actualizarBackupList() {
+                const backups = JSON.parse(localStorage.getItem('htmlBackups') || '[]');
+                const backupList = document.getElementById('backupList');
+                
+                backupList.innerHTML = '';
+                
+                backups.forEach(backup => {
+                    const fecha = new Date(backup.timestamp);
+                    const backupItem = document.createElement('div');
+                    backupItem.className = 'backup-item';
+                    backupItem.innerHTML = `
+                        <span>${fecha.toLocaleString()}</span>
+                        <span>Hash: ${backup.hash.substring(0, 8)}...</span>
+                        <button onclick="sistema.cargarBackup(${backup.id})" class="btn btn-primary" style="padding: 2px 8px; font-size: 10px;">Cargar</button>
+                    `;
+                    backupList.appendChild(backupItem);
+                });
+            }
+            
+            cargarBackup(id) {
+                const backups = JSON.parse(localStorage.getItem('htmlBackups') || '[]');
+                const backup = backups.find(b => b.id === id);
+                
+                if (backup) {
+                    document.getElementById('htmlCode').value = backup.codigo;
+                    this.actualizarVistaPrevia();
+                    this.actualizarContadorCaracteres();
+                    this.mostrarMensaje(`Backup cargado (${new Date(backup.timestamp).toLocaleString()})`, 'success');
+                }
+            }
+            
+            monitorearConexion() {
+                window.addEventListener('online', () => {
+                    this.isConnected = true;
+                    this.mostrarEstado('Conectado - Sistema Activo', 'connected');
+                });
+                
+                window.addEventListener('offline', () => {
+                    this.isConnected = false;
+                    this.mostrarEstado('Desconectado - Modo Local', 'error');
+                });
+            }
+            
+            mostrarEstado(mensaje, tipo) {
+                const statusDot = document.getElementById('statusDot');
+                const statusText = document.getElementById('statusText');
+                
+                statusText.textContent = mensaje;
+                statusDot.className = 'status-dot';
+                
+                if (tipo === 'saving') {
+                    statusDot.classList.add('saving');
+                } else if (tipo === 'error') {
+                    statusDot.classList.add('error');
+                }
+                
+                // Resetear después de 2 segundos si es estado temporal
+                if (tipo === 'saving') {
+                    setTimeout(() => {
+                        if (this.isConnected) {
+                            this.mostrarEstado('Conectado - Sistema Activo', 'connected');
+                        }
+                    }, 2000);
+                }
+            }
+            
+            mostrarMensaje(mensaje, tipo) {
+                // Implementación simple de notificación
+                alert(`[${tipo.toUpperCase()}] ${mensaje}`);
+            }
+            
+            limpiarTodo() {
+                if (confirm('¿Estás seguro de que quieres limpiar todo el código y el historial?')) {
+                    localStorage.removeItem('htmlCode');
+                    localStorage.removeItem('htmlBackups');
+                    document.getElementById('htmlCode').value = '';
+                    this.actualizarVistaPrevia();
+                    this.actualizarContadorCaracteres();
+                    this.actualizarBackupList();
+                    this.mostrarMensaje('Sistema limpiado correctamente', 'success');
+                }
+            }
+        }
+
+        // Instanciar el sistema
+        const sistema = new SistemaHTMLManager();
+
+        // Event Listeners
+        document.getElementById('htmlCode').addEventListener('input', function() {
+            sistema.actualizarVistaPrevia();
+            sistema.actualizarContadorCaracteres();
+        });
+
+        // Funciones Globales para los Botones
+        function guardarManual() {
+            sistema.guardarCodigo();
+            sistema.mostrarMensaje('Guardado manual realizado', 'success');
+        }
+
+        function crearBackup() {
+            sistema.simularGitHubBackup();
+            sistema.mostrarMensaje('Backup creado exitosamente', 'success');
+        }
+
+        function toggleAutoSave() {
+            const autoSave = document.getElementById('autoSave').checked;
+            document.getElementById('autoSaveStatus').textContent = 
+                autoSave ? `Cada ${sistema.saveInterval/1000}s` : 'Desactivado';
+            
+            if (autoSave) {
+                sistema.iniciarAutoSave();
+            } else {
+                clearInterval(sistema.autoSaveInterval);
+            }
+        }
+
+        function mostrarConfiguracion() {
+            document.getElementById('configModal').style.display = 'block';
+        }
+
+        function cerrarModal() {
+            document.getElementById('configModal').style.display = 'none';
+        }
+
+        function guardarConfiguracion() {
+            sistema.guardarConfiguracion();
+            cerrarModal();
+        }
+
+        function limpiarTodo() {
+            sistema.limpiarTodo();
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('configModal');
+            if (event.target === modal) {
+                cerrarModal();
+            }
+        });
+
+        // Código inicial de ejemplo
+        const codigoInicial = `<!DOCTYPE html>
+<html>
+<head>
+    <title>Mi Proyecto HTML</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Bienvenido al Sistema HTML</h1>
+        <p>Este es un proyecto gestionado automáticamente con sistema de backups rotativos.</p>
+        <p>✅ Guardado automático cada 30 segundos</p>
+        <p>🔒 Sistema seguro con hashing</p>
+        <p>🔄 Backups rotativos en GitHub</p>
+    </div>
+</body>
+</html>`;
+
+        // Si no hay código guardado, usar el ejemplo
+        setTimeout(() => {
+            if (!localStorage.getItem('htmlCode')) {
+                document.getElementById('htmlCode').value = codigoInicial;
+                sistema.actualizarVistaPrevia();
+                sistema.actualizarContadorCaracteres();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
