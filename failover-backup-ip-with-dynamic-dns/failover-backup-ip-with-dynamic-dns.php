@@ -93,7 +93,9 @@ function apiCall ($url, $data) {
 
 	$content = curl_exec($init);
 
-	curl_close($init);
+    if (PHP_VERSION_ID < 80000) {
+        curl_close($init);
+    }
 
 	return json_decode($content, true);
 }
