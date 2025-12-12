@@ -37,7 +37,9 @@ function apiCall($url, $data) {
         throw new Exception(curl_error($ch));
     }
 
-    curl_close($ch);
+    if (PHP_VERSION_ID < 80000) {
+        curl_close($ch);
+    }
     $decodedResponse = json_decode($content, true);
 
     if (json_last_error() !== JSON_ERROR_NONE) {
