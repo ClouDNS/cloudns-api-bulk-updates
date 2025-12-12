@@ -50,16 +50,17 @@ for ($i=1; $i<=$pages; $i++) {
 echo "Updated zones: {$y} of {$z} master zones\n";
 
 function apiCall ($url, $data) {
-	$url = "https://api.cloudns.net/{$url}";
+	$url = "http://api.cloudns.net/{$url}";
 	$data = "auth-id=".AUTH_ID."&auth-password=".AUTH_PASS."&{$data}";
 	$init = curl_init();
 	curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($init, CURLOPT_URL, $url);
 	curl_setopt($init, CURLOPT_POST, true);
 	curl_setopt($init, CURLOPT_POSTFIELDS, $data);
-	curl_setopt($init, CURLOPT_USERAGENT, 'cloudns_api_script/0.1 (+https://github.com/ClouDNS/cloudns-api-bulk-updates/tree/master/bulk-soa-update)');
 	$content = curl_exec($init);
-	curl_close($init);
+	if (PHP_VERSION_ID < 80000) {
+        curl_close($init);
+    }
 	return json_decode($content, true);
 }
 
