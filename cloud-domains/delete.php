@@ -47,7 +47,9 @@ function apiCall ($path, $post = array()) {
 	curl_setopt($init, CURLOPT_POSTFIELDS, http_build_query($post));
 	curl_setopt($init, CURLOPT_USERAGENT, 'cloudns_api_script/0.1 (+https://github.com/ClouDNS/cloudns-api-bulk-updates/tree/master/cloud-domains/delete.php)');
 	$content = curl_exec($init);
-	curl_close($init);
+	if (PHP_VERSION_ID < 80000) {
+        curl_close($init);
+    }
 	return json_decode($content, true);
 }
 
