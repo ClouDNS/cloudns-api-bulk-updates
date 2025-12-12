@@ -21,10 +21,6 @@ define("PDNS_PGSQL_PORT", "5432");
 // this file will contain a list of zones, which are already added or checked with the HTTP API
 define("TMPFILE", "/tmp/cloudns_checked_zones.txt");
 
-if ((file_exists(TMPFILE) && !is_writable(TMPFILE)) || (!file_exists(TMPFILE) && !is_writable(dirname(TMPFILE)))) {
-	die("TMPFILE (".TMPFILE.") is not writable. Please make it writable to continue or update the config option to a new path.");
-}
-
 // function to connect to the API
 function apiCall ($url, $data) {
 	$url = "https://api.cloudns.net/{$url}";
@@ -34,9 +30,10 @@ function apiCall ($url, $data) {
 	curl_setopt($init, CURLOPT_URL, $url);
 	curl_setopt($init, CURLOPT_POST, true);
 	curl_setopt($init, CURLOPT_POSTFIELDS, $data);
-	curl_setopt($init, CURLOPT_USERAGENT, 'cloudns_api_script/0.1 (+https://github.com/ClouDNS/cloudns-api-bulk-updates/tree/master/powerdns-pgsql-slave-zones-add)');
 	$content = curl_exec($init);
-	curl_close($init);
+    if (PHP_VERSION_ID < 80000) {
+        curl_close($init);
+    }
 	return json_decode($content, true);
 }
 
