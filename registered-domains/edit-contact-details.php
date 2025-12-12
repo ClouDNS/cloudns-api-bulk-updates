@@ -13,9 +13,10 @@ function apiCall ($url, $data) {
 	curl_setopt($init, CURLOPT_URL, $url);
 	curl_setopt($init, CURLOPT_POST, true);
 	curl_setopt($init, CURLOPT_POSTFIELDS, $data);
-	curl_setopt($init, CURLOPT_USERAGENT, 'cloudns_api_script/0.1 (+https://github.com/ClouDNS/cloudns-api-bulk-updates/tree/master/registered-domains)');
 	$content = curl_exec($init);
-	curl_close($init);
+    if (PHP_VERSION_ID < 80000) {
+        curl_close($init);
+    }
 	return json_decode($content, true);
 }
 
@@ -27,12 +28,12 @@ if (isset($login['status']) && $login['status'] == 'Failed') {
 
 // list of the domain names whose contacts will be changed
 $domains = array(
-	'domain1.com',
-	'domain2.com',
+	'example.com',
+	'example.net',
 );
 
-$address = 'Some address';
-$zip = '000';
+$address = 'Street Name 1';
+$zip = '12345';
 
 $success = array();
 foreach ($domains as $key=>$domain) {
