@@ -10,9 +10,6 @@ define("ZONES_DIR", "/var/named/run-root/var");
 // this file will contain a list of files that are not dns zone files and there won't be a request to be added the next time the script runs
 define("TMPFILE", "/tmp/cloudns_invalid-zone-names.txt");
 
-if ((file_exists(TMPFILE) && !is_writable(TMPFILE)) || (!file_exists(TMPFILE) && !is_writable(dirname(TMPFILE)))) {
-	die("TMPFILE (".TMPFILE.") is not writable. Please make it writable to continue or update the config option to a new path.");
-}
 
 // function to connect to the API
 function apiCall ($url, $data) {
@@ -23,9 +20,10 @@ function apiCall ($url, $data) {
 	curl_setopt($init, CURLOPT_URL, $url);
 	curl_setopt($init, CURLOPT_POST, true);
 	curl_setopt($init, CURLOPT_POSTFIELDS, $data);
-	curl_setopt($init, CURLOPT_USERAGENT, 'cloudns_api_script/0.1 (+https://github.com/ClouDNS/cloudns-api-bulk-updates/tree/master/plesk-slave-zones-add)');
 	$content = curl_exec($init);
-	curl_close($init);
+    if (PHP_VERSION_ID < 80000) {
+        curl_close($init);
+    }
 	return json_decode($content, true);
 }
 
@@ -34,9 +32,6 @@ $login = apiCall('dns/login.json', "");
 if (isset($login['status']) && $login['status'] == 'Failed') {
 	die($login['statusDescription']);
 }
-
-// gets the content of the file
-$fopen = fopen(TMPFILE, "a+");
 
 // gets the content of the file
 $invalid_zones = file(TMPFILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -61,4 +56,3 @@ if ($handle = opendir(ZONES_DIR)) {
 
 	closedir($handle);
 }
-fclose($fopen);
